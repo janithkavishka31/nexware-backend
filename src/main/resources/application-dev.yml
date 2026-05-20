@@ -1,0 +1,49 @@
+# Local development — use Neon PostgreSQL or docker-compose postgres
+spring:
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    url: jdbc:postgresql://${NEON_DB_HOST:localhost}:${NEON_DB_PORT:5432}/${NEON_DB_NAME:nexware}?sslmode=${NEON_DB_SSL_MODE:prefer}&channelBinding=${NEON_DB_CHANNEL_BINDING:prefer}
+    username: ${NEON_DB_USERNAME:nexware}
+    password: ${NEON_DB_PASSWORD:nexware_local}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: NexwareHikariPool
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    show-sql: true
+
+  flyway:
+    clean-disabled: false
+
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: true
+
+nexware:
+  # Local dev without Docker: run with PostgreSQL only (no Redis/Kafka required).
+  redis:
+    enabled: ${REDIS_ENABLED:false}
+  kafka:
+    enabled: ${KAFKA_ENABLED:false}
+  security:
+    jwt:
+      secret: ${JWT_SECRET:dev-only-change-me-to-a-secure-256-bit-secret-before-production}
+
+logging:
+  level:
+    com.nexware: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+
+springdoc:
+  swagger-ui:
+    enabled: true
