@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    clean-disabled: true
+
+nexware:
+  security:
+    jwt:
+      secret: test-jwt-secret-must-be-at-least-32-characters-long
+      access-token-expiration-ms: 900000
+      refresh-token-expiration-ms: 604800000
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+  redis:
+    enabled: false
+  kafka:
+    enabled: false
+  scheduler:
+    reservation-expiry-enabled: false
+    reservation-expiry-cron: "0 0 0 1 1 ?"
+
+logging:
+  level:
+    root: WARN
+    com.nexware: INFO
