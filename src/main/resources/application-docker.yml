@@ -1,0 +1,32 @@
+server:
+  forward-headers-strategy: framework
+
+nexware:
+  openapi:
+    server-url: ${NEXWARE_OPENAPI_SERVER_URL:https://nexware.me}
+    force-https: ${NEXWARE_OPENAPI_FORCE_HTTPS:true}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${NEON_DB_HOST}:${NEON_DB_PORT:5432}/${NEON_DB_NAME}?sslmode=${NEON_DB_SSL_MODE:require}&channelBinding=${NEON_DB_CHANNEL_BINDING:require}
+    username: ${NEON_DB_USERNAME}
+    password: ${NEON_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: NexwareDockerHikariPool
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    show-sql: false
+
+  flyway:
+    clean-disabled: true
+
+logging:
+  level:
+    com.nexware: INFO
+    org.hibernate.SQL: WARN
