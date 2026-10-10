@@ -13,7 +13,7 @@
 
     <groupId>com.nexware</groupId>
     <artifactId>nexware-backend</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>NexWare Distribution Platform</name>
         <description>Enterprise electronics distribution and warehouse management platform</description>
 
