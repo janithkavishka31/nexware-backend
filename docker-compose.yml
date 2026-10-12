@@ -1,0 +1,38 @@
+# Production / EC2 — backend only, connects to Neon PostgreSQL via .env
+# Usage: cp .env.example .env  (fill Neon credentials)  then  docker compose up -d --build
+#
+# Local full stack (Postgres + Redis + Kafka): use docker-compose.local.yml override
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --build
+
+name: nexware
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexware-backend
+    restart: unless-stopped
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      NEXWARE_OPENAPI_SERVER_URL: ${NEXWARE_OPENAPI_SERVER_URL:-https://nexware.me}
+      NEXWARE_OPENAPI_FORCE_HTTPS: ${NEXWARE_OPENAPI_FORCE_HTTPS:-true}
+      REDIS_ENABLED: "false"
+      KAFKA_ENABLED: "false"
+      NEXWARE_REDIS_ENABLED: "false"
+      NEXWARE_KAFKA_ENABLED: "false"
+      MANAGEMENT_HEALTH_REDIS_ENABLED: "false"
+      SPRING_AUTOCONFIGURE_EXCLUDE: >-
+        org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,
+        org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration,
+        org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
